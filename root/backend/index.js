@@ -7,7 +7,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
-import {amadeus} from './amadeusAuth.js';
+import { amadeus } from "./amadeusAuth.js";
 
 const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -133,70 +133,76 @@ app.post("/flights", async function (req, res) {
       maxPrice: maxPrice,
       currencyCode: currencyCode,
       includedAirlineCodes: includedAirlineCodes,
-      excludedAirlineCodes: excludedAirlineCodes
+      excludedAirlineCodes: excludedAirlineCodes,
     })
     .catch((err) => console.log(err));
 
   try {
     const responseBody = await JSON.parse(response.body);
     const flightOffers = responseBody.data;
-    
+
     // Array to store the extracted flight details
-  const extractedFlights = [];
-  
-  // Iterate over each flight offer
-  flightOffers.forEach(flight => {
-    // Extract price details from the flight offer
-    const price = {
-      total: flight.price.total,
-      currency: flight.price.currency
-    };
+    const extractedFlights = [];
 
-    let carriers = responseBody.dictionaries.carriers;
+    // Iterate over each flight offer
+    flightOffers.forEach((flight) => {
+      // Extract price details from the flight offer
+      const price = {
+        total: flight.price.total,
+        currency: flight.price.currency,
+      };
+      const flightPairs = [];
+      let carriers = responseBody.dictionaries.carriers;
 
-    // Iterate over each itinerary in the flight offer
-    flight.itineraries.forEach(itinerary => {
-      const segments = itinerary.segments;
-      if (segments.length === 0) return; // Skip if no segments
-      
-      // Extract origin and arrival codes from first and last segments respectively
-      const originCode = segments[0].departure.iataCode;
-      const arrivalCode = segments[segments.length - 1].arrival.iataCode;
-      
-      // Extract departure time from the first segment and arrival time from the last segment
-      const departureTime = segments[0].departure.at;
-      const arrivalTime = segments[segments.length - 1].arrival.at;
-      
-      // Itinerary duration is given directly in the itinerary
-      const duration = itinerary.duration;
-      
-      // Determine nonStop: true if there's one segment or every segment shows zero stops
-      const nonStop = segments.length === 1 || segments.every(seg => seg.numberOfStops === 0);
-      
-      // Calculate total number of stops for the itinerary (sum of each segment's stops)
-      const numberOfStops = segments.reduce((acc, seg) => acc + seg.numberOfStops, 0);
-      
-      // Extract airline name and flight number for each segment using the carriers dictionary
-      const segmentsDetails = segments.map(seg => ({
-        airlineName: carriers[seg.carrierCode] || seg.carrierCode,
-        flightNumber: seg.number
-      }));
-      
-      // Push the extracted details into the array
-      extractedFlights.push({
-        originCode,
-        arrivalCode,
-        departureTime,
-        arrivalTime,
-        duration,
-        nonStop,
-        numberOfStops,
-        price,
-        segmentsDetails
+      // Iterate over each itinerary in the flight offer
+      flight.itineraries.forEach((itinerary) => {
+        const segments = itinerary.segments;
+        if (segments.length === 0) return; // Skip if no segments
+
+        // Extract origin and arrival codes from first and last segments respectively
+        const originCode = segments[0].departure.iataCode;
+        const arrivalCode = segments[segments.length - 1].arrival.iataCode;
+
+        // Extract departure time from the first segment and arrival time from the last segment
+        const departureTime = segments[0].departure.at;
+        const arrivalTime = segments[segments.length - 1].arrival.at;
+
+        // Itinerary duration is given directly in the itinerary
+        const duration = itinerary.duration;
+
+        // Determine nonStop: true if there's one segment or every segment shows zero stops
+        const nonStop =
+          segments.length === 1 ||
+          segments.every((seg) => seg.numberOfStops === 0);
+
+        // Calculate total number of stops for the itinerary (sum of each segment's stops)
+        const numberOfStops = segments.reduce(
+          (acc, seg) => acc + seg.numberOfStops,
+          0
+        );
+
+        // Extract airline name and flight number for each segment using the carriers dictionary
+        const segmentsDetails = segments.map((seg) => ({
+          airlineName: carriers[seg.carrierCode] || seg.carrierCode,
+          flightNumber: seg.number,
+        }));
+
+        // Push the extracted details into the array
+        flightPairs.push({
+          originCode,
+          arrivalCode,
+          departureTime,
+          arrivalTime,
+          duration,
+          nonStop,
+          numberOfStops,
+          price,
+          segmentsDetails,
+        });
       });
+      extractedFlights.push(flightPairs);
     });
-  });
-    
+
     // Output the extracted flight information
     console.log("Extracted Flight Information:", extractedFlights);
     res.json(extractedFlights);
