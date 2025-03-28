@@ -102,6 +102,22 @@ app.get("/me", requireAuth, async (req, res) => {
   res.json(user);
 });
 
+app.post("/itinerary", requireAuth, async (req, res) => {
+  const userId = req.userId;
+  const name = req.body.name;
+  const existingItinerary = await prisma.itinerary.findUnique({
+    where: { id: userId, name: name },
+  });
+  if (existingItinerary) {
+    return res.status(400).json({ error: "User already exists" });
+  }
+  const newItinerary = await prisma.itinerary.create({
+    data: { name, userId },
+    select: { id: true, name: true },
+  });
+  res.json(newItinerary);
+});
+
 app.post("/flights", async function (req, res) {
   console.log(req.body);
   const departureDate = req.body.departureDate;

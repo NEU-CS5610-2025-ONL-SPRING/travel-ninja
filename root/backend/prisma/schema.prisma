@@ -19,6 +19,7 @@ model User {
 
 model Itinerary {
     id        Int      @id @default(autoincrement())
+    name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     User      User?    @relation(fields: [userId], references: [id])
@@ -26,6 +27,8 @@ model Itinerary {
     Booking   Booking?
     flights   Flight[]
     hotels    Hotel[]
+
+    @@unique([name, userId])
 }
 
 model Booking {
