@@ -16,6 +16,15 @@ export default function AppLayout() {
         <nav className="menu">
           <ul className="menu-list">
             <li>
+              <Link to="/app">Profile</Link>
+            </li>
+            <li>
+              <Link to="/app/flightSearch">Flight Search</Link>
+            </li>
+            <li>
+              <Link to="/app/savedFlights">Saved Flights List</Link>
+            </li>
+            <li>
               <button
                 className="exit-button"
                 onClick={async () => {

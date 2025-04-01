@@ -67,8 +67,7 @@ app.post("/login", async (req, res) => {
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
-  // password: 123456
-  // user.password: $2b$10$naV1eAwirV13nyBYVS96W..52QzN8U/UQ7mmi/IEEVJDtCAdDmOl2
+
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
     return res.status(401).json({ error: "Invalid credentials" });
@@ -119,7 +118,6 @@ app.post("/itinerary", requireAuth, async (req, res) => {
 });
 
 app.post("/flights", async function (req, res) {
-  console.log(req.body);
   const departureDate = req.body.departureDate;
   const returnDate = req.body.returnDate;
   const originLocationCode = req.body.originLocationCode;
@@ -157,12 +155,9 @@ app.post("/flights", async function (req, res) {
     const responseBody = await JSON.parse(response.body);
     const flightOffers = responseBody.data;
 
-    // Array to store the extracted flight details
     const extractedFlights = [];
 
-    // Iterate over each flight offer
     flightOffers.forEach((flight) => {
-      // Extract price details from the flight offer
       const price = {
         total: flight.price.total,
         currency: flight.price.currency,
@@ -170,40 +165,32 @@ app.post("/flights", async function (req, res) {
       const flightPairs = [];
       let carriers = responseBody.dictionaries.carriers;
 
-      // Iterate over each itinerary in the flight offer
       flight.itineraries.forEach((itinerary) => {
         const segments = itinerary.segments;
-        if (segments.length === 0) return; // Skip if no segments
+        if (segments.length === 0) return;
 
-        // Extract origin and arrival codes from first and last segments respectively
         const originCode = segments[0].departure.iataCode;
         const arrivalCode = segments[segments.length - 1].arrival.iataCode;
 
-        // Extract departure time from the first segment and arrival time from the last segment
         const departureTime = segments[0].departure.at;
         const arrivalTime = segments[segments.length - 1].arrival.at;
 
-        // Itinerary duration is given directly in the itinerary
         const duration = itinerary.duration;
 
-        // Determine nonStop: true if there's one segment or every segment shows zero stops
         const nonStop =
           segments.length === 1 ||
           segments.every((seg) => seg.numberOfStops === 0);
 
-        // Calculate total number of stops for the itinerary (sum of each segment's stops)
         const numberOfStops = segments.reduce(
           (acc, seg) => acc + seg.numberOfStops,
           0
         );
 
-        // Extract airline name and flight number for each segment using the carriers dictionary
         const segmentsDetails = segments.map((seg) => ({
           airlineName: carriers[seg.carrierCode] || seg.carrierCode,
           flightNumber: seg.number,
         }));
 
-        // Push the extracted details into the array
         flightPairs.push({
           originCode,
           arrivalCode,
@@ -219,7 +206,6 @@ app.post("/flights", async function (req, res) {
       extractedFlights.push(flightPairs);
     });
 
-    // Output the extracted flight information
     console.log("Extracted Flight Information:", extractedFlights);
     res.json(extractedFlights);
   } catch (error) {
@@ -228,6 +214,41 @@ app.post("/flights", async function (req, res) {
   }
 });
 
+app.post("/addFlight", requireAuth, async function (req, res) {
+  const userId = req.userId;
+  const flightName = req.body.flightName;
+  const airlineName = req.body.airlineName;
+  const source = req.body.source;
+  const destination = req.body.destination;
+  const departureDate = req.body.departureDate;
+  const returnDate = req.body.returnDate;
+  const price = parseFloat(req.body.price);
+
+  try {
+    const flight = await prisma.flight.create({
+      data: {
+        flightName,
+        airlineName,
+        source,
+        destination,
+        departureDate: new Date(departureDate),
+        returnDate: new Date(returnDate),
+        price,
+
+        User: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    res.json(flight);
+  } catch (error) {
+    console.error("Error creating flight: ", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the flight." });
+  }
+});
 app.listen(8000, () => {
   console.log("Server running on http://localhost:8000 🎉 🚀");
 });

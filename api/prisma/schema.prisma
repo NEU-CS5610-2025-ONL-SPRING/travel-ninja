@@ -15,6 +15,7 @@ model User {
     itineraries Itinerary[]
     createdAt   DateTime    @default(now())
     updatedAt   DateTime    @updatedAt
+    flights     Flight[]
 }
 
 model Itinerary {
@@ -25,8 +26,6 @@ model Itinerary {
     User      User?    @relation(fields: [userId], references: [id])
     userId    Int?
     Booking   Booking?
-    flights   Flight[]
-    hotels    Hotel[]
 
     @@unique([name, userId])
 }
@@ -38,7 +37,7 @@ model Booking {
 }
 
 model Flight {
-    id            Int        @id @default(autoincrement())
+    id            Int      @id @default(autoincrement())
     flightName    String
     airlineName   String
     source        String
@@ -46,18 +45,6 @@ model Flight {
     departureDate DateTime
     returnDate    DateTime
     price         Float
-    Itinerary     Itinerary? @relation(fields: [itineraryId], references: [id])
-    itineraryId   Int?
-}
-
-model Hotel {
-    id           Int        @id @default(autoincrement())
-    hotelName    String
-    checkInDate  DateTime
-    checkOutDate DateTime
-    rating       Int
-    city         String
-    price        Int
-    Itinerary    Itinerary? @relation(fields: [itineraryId], references: [id])
-    itineraryId  Int?
+    User          User?    @relation(fields: [userId], references: [id])
+    userId        Int?
 }

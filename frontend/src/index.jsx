@@ -2,13 +2,13 @@ import React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
-// import Todos from "./components/Todos";
-// import TodoDetail from "./components/TodoDetail";
+import FlightSearch from "./components/FlightSearch";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home";
+import SavedFlights from "./components/SavedFlights";
 import { AuthProvider } from "./security/AuthContext";
 import RequireAuth from "./security/RequireAuth";
 
@@ -24,13 +24,16 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/app"
+          path="/app/*"
           element={
             <RequireAuth>
               <AppLayout />
             </RequireAuth>
           }
         >
+          <Route index element={<Profile />} />
+          <Route path="flightSearch" element={<FlightSearch />} />
+          <Route path="savedFlights" element={<SavedFlights />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
