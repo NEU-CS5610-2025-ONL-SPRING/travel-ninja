@@ -66,3 +66,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.flight-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  display: flex;
+  gap: 16px; /* space between inbound/outbound */
+}
+
+.flight-card__section {
+  flex: 1; /* each section takes equal width */
+}

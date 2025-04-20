@@ -8,10 +8,11 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home";
-import SavedFlights from "./components/SavedFlights";
+import Itineraries from "./components/Itineraries";
+import ItineraryDetails from "./components/ItineraryDetails";
 import { AuthProvider } from "./security/AuthContext";
 import RequireAuth from "./security/RequireAuth";
-
+import './style/index.css';
 const container = document.getElementById("root");
 
 const root = ReactDOMClient.createRoot(container);
@@ -33,7 +34,8 @@ root.render(
         >
           <Route index element={<Profile />} />
           <Route path="flightSearch" element={<FlightSearch />} />
-          <Route path="savedFlights" element={<SavedFlights />} />
+          <Route path="itineraries" element={<Itineraries />} />
+          <Route path="itineraries/:id" element={<ItineraryDetails></ItineraryDetails>} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
