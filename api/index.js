@@ -15,7 +15,7 @@ export const prisma = new PrismaClient();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://frontend-gjo8vqrkt-shreyas-sahus-projects.vercel.app",
     credentials: true,
   })
 );
