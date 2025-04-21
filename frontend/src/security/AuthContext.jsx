@@ -34,22 +34,56 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const res = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+        const res = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
 
-    if (res.ok) {
-      const userData = await res.json();
-      setIsAuthenticated(true);
-      setUser(userData);
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
+        if (res.ok) {
+            const userData = await res.json();
+            setIsAuthenticated(true);
+            setUser(userData);
+            return true; // Return success
+        } else {
+            const errorData = await res.json();
+            setIsAuthenticated(false);
+            setUser(null);
+            throw new Error(errorData.error || "Invalid credentials"); // Throw error with message
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        throw error; // Re-throw to be caught in the component
     }
-  };
+};
+
+const register = async (email, password, name) => {
+    try {
+        const res = await fetch(`${API_URL}/register`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, name }),
+        });
+
+        if (res.ok) {
+            const userData = await res.json();
+            setIsAuthenticated(true);
+            setUser(userData);
+            return true; // Return success
+        } else {
+            const errorData = await res.json();
+            setIsAuthenticated(false);
+            setUser(null);
+            throw new Error(errorData.error || "Registration failed"); // Throw error with message
+        }
+    } catch (error) {
+        console.error("Registration error:", error);
+        throw error; // Re-throw to be caught in the component
+    }
+};
 
   const logout = async () => {
     await fetch(`${API_URL}/logout`, {
@@ -59,23 +93,23 @@ export function AuthProvider({ children }) {
     setIsAuthenticated(false);
   };
 
-  const register = async (email, password, name) => {
-    const res = await fetch(`${API_URL}/register`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, name }),
-    });
+  // const register = async (email, password, name) => {
+  //   const res = await fetch(`${API_URL}/register`, {
+  //     method: "POST",
+  //     credentials: "include",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email, password, name }),
+  //   });
 
-    if (res.ok) {
-      const userData = await res.json();
-      setIsAuthenticated(true);
-      setUser(userData);
-    } else {
-      setIsAuthenticated(false);
-      setUser(null);
-    }
-  };
+  //   if (res.ok) {
+  //     const userData = await res.json();
+  //     setIsAuthenticated(true);
+  //     setUser(userData);
+  //   } else {
+  //     setIsAuthenticated(false);
+  //     setUser(null);
+  //   }
+  // };
 
   return (
     <AuthContext.Provider
