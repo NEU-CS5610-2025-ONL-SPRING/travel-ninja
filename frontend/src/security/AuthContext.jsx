@@ -3,11 +3,8 @@ import React, { createContext, useState, useEffect, useContext } from "react";
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  // Remove any trailing slashes from the API URL
-  // const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-  // const API_URL = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
   const API_URL = process.env.REACT_APP_API_URL;
-  
+
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -42,7 +39,7 @@ export function AuthProvider({ children }) {
     try {
       const loginUrl = `${API_URL}/login`;
       console.log("Login request to:", loginUrl);
-      
+
       const res = await fetch(loginUrl, {
         method: "POST",
         credentials: "include",
@@ -58,8 +55,7 @@ export function AuthProvider({ children }) {
       } else {
         setIsAuthenticated(false);
         setUser(null);
-        
-        // Check if response is JSON before trying to parse it
+
         const contentType = res.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const errorData = await res.json();
@@ -92,7 +88,7 @@ export function AuthProvider({ children }) {
     try {
       const registerUrl = `${API_URL}/register`;
       console.log("Registering at URL:", registerUrl);
-      
+
       const res = await fetch(registerUrl, {
         method: "POST",
         credentials: "include",
@@ -108,8 +104,7 @@ export function AuthProvider({ children }) {
       } else {
         setIsAuthenticated(false);
         setUser(null);
-        
-        // Check if response is JSON before trying to parse it
+
         const contentType = res.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const errorData = await res.json();

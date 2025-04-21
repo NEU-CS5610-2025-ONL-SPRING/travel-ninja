@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthUser } from "../security/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../style/Auth.css"; // We'll create this file
+import "../style/Auth.css";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -19,14 +19,13 @@ export default function Register() {
     };
 
     const validatePassword = (password) => {
-        // Require at least 8 characters, 1 uppercase, 1 lowercase, and 1 number
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
         return passwordRegex.test(password);
     };
 
     const validateField = (name, value) => {
         let newErrors = { ...errors };
-        
+
         switch (name) {
             case "email":
                 if (!value) {
@@ -56,14 +55,14 @@ export default function Register() {
             default:
                 break;
         }
-        
+
         setErrors(newErrors);
-        return !newErrors[name]; // Return true if no error for this field
+        return !newErrors[name];
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         if (name === "email") {
             setEmail(value);
         } else if (name === "password") {
@@ -71,7 +70,7 @@ export default function Register() {
         } else if (name === "name") {
             setName(value);
         }
-        
+
         setTouched(prev => ({ ...prev, [name]: true }));
         validateField(name, value);
     };
@@ -84,20 +83,17 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Mark all fields as touched
+
         setTouched({
             email: true,
             password: true,
             name: true
         });
-        
-        // Validate all fields
+
         const isEmailValid = validateField("email", email);
         const isPasswordValid = validateField("password", password);
         const isNameValid = validateField("name", name);
-        
-        // Only proceed if all validations pass
+
         if (isEmailValid && isPasswordValid && isNameValid) {
             setIsSubmitting(true);
             try {
@@ -105,8 +101,7 @@ export default function Register() {
                 navigate("/app");
             } catch (error) {
                 console.error("Registration error:", error);
-                
-                // Handle backend errors, including email already exists
+
                 if (error.response?.data?.error === "User already exists") {
                     setErrors(prev => ({
                         ...prev,
@@ -179,8 +174,8 @@ export default function Register() {
                             <div className="error-message">{errors.password}</div>
                         )}
                     </div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="auth-button"
                         disabled={isSubmitting}
                     >

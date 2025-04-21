@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthUser } from "../security/AuthContext";
 import { useNavigate } from "react-router-dom";
-import "../style/Auth.css"; // We'll create this file
+import "../style/Auth.css";
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ function Login() {
 
     const validateField = (name, value) => {
         let newErrors = { ...errors };
-        
+
         switch (name) {
             case "email":
                 if (!value) {
@@ -40,20 +40,20 @@ function Login() {
             default:
                 break;
         }
-        
+
         setErrors(newErrors);
-        return !newErrors[name]; // Return true if no error for this field
+        return !newErrors[name];
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         if (name === "email") {
             setEmail(value);
         } else if (name === "password") {
             setPassword(value);
         }
-        
+
         setTouched(prev => ({ ...prev, [name]: true }));
         validateField(name, value);
     };
@@ -66,18 +66,15 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Mark all fields as touched
+
         setTouched({
             email: true,
             password: true
         });
-        
-        // Validate all fields
+
         const isEmailValid = validateField("email", email);
         const isPasswordValid = validateField("password", password);
-        
-        // Only proceed if all validations pass
+
         if (isEmailValid && isPasswordValid) {
             setIsSubmitting(true);
             try {
@@ -85,7 +82,7 @@ function Login() {
                 navigate("/app");
             } catch (error) {
                 console.error("Login error:", error);
-                
+
                 if (!navigator.onLine || (error.name === "TypeError" && error.message === "Failed to fetch")) {
                     setErrors(prev => ({
                         ...prev,
@@ -141,8 +138,8 @@ function Login() {
                             <div className="error-message">{errors.password}</div>
                         )}
                     </div>
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="auth-button"
                         disabled={isSubmitting}
                     >

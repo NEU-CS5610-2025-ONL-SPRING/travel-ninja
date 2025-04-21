@@ -8,13 +8,11 @@ export default function ItinerariesList() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // track which one we’re editing, and the new name
     const [editingId, setEditingId] = useState(null);
     const [editingName, setEditingName] = useState("");
 
     const navigate = useNavigate();
 
-    // fetch list
     const getItineraries = async () => {
         setLoading(true);
         try {
@@ -34,7 +32,6 @@ export default function ItinerariesList() {
         getItineraries();
     }, [API_URL]);
 
-    // delete handler
     const deleteItinerary = async (id) => {
         if (!window.confirm("Delete this itinerary?")) return;
         try {
@@ -43,14 +40,12 @@ export default function ItinerariesList() {
                 credentials: "include",
             });
             if (!res.ok) throw new Error("Delete failed");
-            // remove from state
             setItineraries(prev => prev.filter(i => i.id !== id));
         } catch (err) {
             setError(err.message);
         }
     };
 
-    // save new name handler
     const saveItineraryName = async (id) => {
         try {
             const res = await fetch(`${API_URL}/itinerary/${id}`, {

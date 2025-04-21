@@ -73,9 +73,9 @@ button:focus-visible {
   margin-bottom: 16px;
 
   display: flex;
-  gap: 16px; /* space between inbound/outbound */
+  gap: 16px;
 }
 
 .flight-card__section {
-  flex: 1; /* each section takes equal width */
+  flex: 1;
 }

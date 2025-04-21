@@ -8,7 +8,6 @@ export default function CreateItinerary() {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
 
-    // Reset success message after 3 seconds
     useEffect(() => {
         if (success) {
             const timer = setTimeout(() => {
@@ -48,11 +47,9 @@ export default function CreateItinerary() {
                 throw new Error(data.error || `Request failed (${res.status})`);
             }
 
-            // Success! Clear form and show success message
             setItineraryName("");
             setSuccess(true);
 
-            // Trigger a refresh of parent component
             if (typeof window !== 'undefined') {
                 const refreshEvent = new CustomEvent('itineraryCreated');
                 window.dispatchEvent(refreshEvent);

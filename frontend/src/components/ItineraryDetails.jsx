@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 const API_URL = process.env.REACT_APP_API_URL;
 
 export default function ItineraryDetails() {
-    const { id } = useParams();        // the :id from /app/itineraries/:id
+    const { id } = useParams();
     const [iti, setIti] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);

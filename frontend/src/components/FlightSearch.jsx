@@ -84,10 +84,9 @@ export default function FlightSearch() {
         }
 
         setErrors(newErrors);
-        return !newErrors[name]; // Return true if no error for this field
+        return !newErrors[name];
     };
 
-    // Run validation when departure date changes
     useEffect(() => {
         if (touched.returnDate) {
             validateField("returnDate", formData.returnDate);
@@ -114,7 +113,6 @@ export default function FlightSearch() {
     };
 
     const isFormValid = () => {
-        // Check if all required fields have been filled and there are no errors
         return (
             formData.departureDate &&
             formData.returnDate &&
@@ -127,8 +125,6 @@ export default function FlightSearch() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Mark all fields as touched
         setTouched({
             departureDate: true,
             returnDate: true,
@@ -137,14 +133,12 @@ export default function FlightSearch() {
             adults: true
         });
 
-        // Validate all fields
         const isDepartureDateValid = validateField("departureDate", formData.departureDate);
         const isReturnDateValid = validateField("returnDate", formData.returnDate);
         const isOriginValid = validateField("originLocationCode", formData.originLocationCode);
         const isDestinationValid = validateField("destinationLocationCode", formData.destinationLocationCode);
         const isAdultsValid = validateField("adults", formData.adults);
 
-        // Only proceed if all validations pass
         if (isDepartureDateValid && isReturnDateValid && isOriginValid && isDestinationValid && isAdultsValid) {
             setLoading(true);
             setError(null);
@@ -161,7 +155,6 @@ export default function FlightSearch() {
                     body: JSON.stringify({ ...formData, max: 10 }),
                 });
 
-                // Check if response is OK
                 if (!res.ok) {
                     throw new Error(`Server returned ${res.status}: ${res.statusText}`);
                 }
@@ -175,7 +168,6 @@ export default function FlightSearch() {
             } catch (err) {
                 console.error("Flight search error:", err);
 
-                // Handle different types of errors with friendly messages
                 if (err.message.includes("Server returned")) {
                     setError("The flight search service is currently unavailable. Please try again later.");
                 } else if (err.message.includes("non-JSON")) {
