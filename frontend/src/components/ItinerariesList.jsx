@@ -7,26 +7,24 @@ export default function ItinerariesList() {
     const [itineraries, setItineraries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // track which one we’re editing, and the new name
+    const [editingId, setEditingId] = useState(null);
+    const [editingName, setEditingName] = useState("");
+
     const navigate = useNavigate();
 
+    // fetch list
     const getItineraries = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${API_URL}/itinerary`, {
-                method: "GET",
+            const res = await fetch(`${API_URL}/itinerary`, {
                 credentials: "include",
-                headers: { "Content-Type": "application/json" },
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch itineraries");
-            }
-
-            const data = await response.json();
-            setItineraries(data);
+            if (!res.ok) throw new Error("Failed to fetch itineraries");
+            setItineraries(await res.json());
         } catch (err) {
             setError(err.message);
-            console.error("Error fetching itineraries:", err);
         } finally {
             setLoading(false);
         }
@@ -34,46 +32,102 @@ export default function ItinerariesList() {
 
     useEffect(() => {
         getItineraries();
-        // Include getItineraries in the dependency array
-    }, [API_URL]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [API_URL]);
 
-    const getItinerary = async (itinerary) => {
+    // delete handler
+    const deleteItinerary = async (id) => {
+        if (!window.confirm("Delete this itinerary?")) return;
+        try {
+            const res = await fetch(`${API_URL}/itinerary/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (!res.ok) throw new Error("Delete failed");
+            // remove from state
+            setItineraries(prev => prev.filter(i => i.id !== id));
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    // save new name handler
+    const saveItineraryName = async (id) => {
+        try {
+            const res = await fetch(`${API_URL}/itinerary/${id}`, {
+                method: "PATCH",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: editingName }),
+            });
+            if (!res.ok) throw new Error("Update failed");
+            const updated = await res.json();
+            // update in state
+            setItineraries(prev =>
+                prev.map(i => (i.id === id ? { ...i, name: updated.name } : i))
+            );
+            setEditingId(null);
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const viewDetails = (itinerary) => {
         navigate(`/app/itineraries/${itinerary.id}`, {
             state: { itinerary },
         });
     };
 
-    if (loading) {
-        return <div className="loading-message">Loading your itineraries...</div>;
-    }
+    if (loading) return <div className="loading-message">Loading your itineraries...</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
-    if (error) {
-        return <div className="error-message">{error}</div>;
+    if (!itineraries.length) {
+        return <div className="empty-message">You don't have any itineraries yet. Create one to get started!</div>;
     }
 
     return (
-        <>
-            {itineraries && itineraries.length > 0 ? (
-                <div className="itineraries-list">
-                    {itineraries.map((itinerary, index) => (
-                        <div className="itinerary-card" key={itinerary.id || index}>
-                            <h3>{itinerary.name}</h3>
+        <div className="itineraries-list">
+            {itineraries.map((it) => (
+                <div className="itinerary-card" key={it.id}>
+                    {editingId === it.id ? (
+                        <>
+                            <input
+                                type="text"
+                                value={editingName}
+                                onChange={e => setEditingName(e.target.value)}
+                            />
+                            <button onClick={() => saveItineraryName(it.id)}>Save</button>
+                            <button onClick={() => setEditingId(null)}>Cancel</button>
+                        </>
+                    ) : (
+                        <>
+                            <h3>{it.name}</h3>
                             <div className="itinerary-card-footer">
                                 <button
+                                    className="edit-button"
+                                    onClick={() => {
+                                        setEditingId(it.id);
+                                        setEditingName(it.name);
+                                    }}
+                                >
+                                    Edit Name
+                                </button>
+                                <button
+                                    className="delete-button"
+                                    onClick={() => deleteItinerary(it.id)}
+                                >
+                                    Delete
+                                </button>
+                                <button
                                     className="expand-button"
-                                    onClick={() => getItinerary(itinerary)}
+                                    onClick={() => viewDetails(it)}
                                 >
                                     View Details
                                 </button>
                             </div>
-                        </div>
-                    ))}
+                        </>
+                    )}
                 </div>
-            ) : (
-                <div className="empty-message">
-                    You don't have any itineraries yet. Create one to get started!
-                </div>
-            )}
-        </>
+            ))}
+        </div>
     );
 }
