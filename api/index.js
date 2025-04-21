@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import express, { response } from "express";
+import express from "express";
 import pkg from "@prisma/client";
 import morgan from "morgan";
 import cors from "cors";
@@ -10,7 +10,13 @@ import bcrypt from "bcrypt";
 import { amadeus } from "./amadeusAuth.js";
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+// Fix CORS configuration to match your frontend port
+app.use(cors({ 
+  origin: "http://localhost:3000", // Make sure this matches your frontend URL exactly
+  credentials: true 
+}));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));
@@ -27,69 +33,127 @@ function requireAuth(req, res, next) {
   }
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-    // attaching the user id to the request object, this will make it available in the endpoints that use this middleware
     req.userId = payload.userId;
     next();
   } catch (err) {
+    console.error("JWT verification error:", err);
     return res.status(401).json({ error: "Unauthorized" });
   }
 }
 
-// this is a public endpoint because it doesn't have the requireAuth middleware
+// Public endpoint
 app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
+// Registration endpoint - Fixed error handling
 app.post("/register", async (req, res) => {
-  const { email, password, name } = req.body;
-  const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) {
-    return res.status(400).json({ error: "User already exists" });
+  try {
+    const { email, password, name } = req.body;
+    
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: "Email, password, and name are required" });
+    }
+    
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+      data: { email, password: hashedPassword, name },
+      select: { id: true, email: true, name: true },
+    });
+
+    const payload = { userId: newUser.id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
+    
+    // Fix cookie settings for proper cross-domain functionality
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'strict', // Use 'None' with secure:true in production with HTTPS
+      // secure: true, // Uncomment in production with HTTPS
+      path: '/'
+    });
+
+    console.log("User registered successfully:", { id: newUser.id, email: newUser.email });
+    res.json(newUser);
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Registration failed. Please try again." });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await prisma.user.create({
-    data: { email, password: hashedPassword, name },
-    select: { id: true, email: true, name: true },
-  });
-
-  const payload = { userId: newUser.id };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
-  res.cookie("token", token, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-
-  res.json(newUser);
 });
 
+// Login endpoint - Fixed error handling
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    return res.status(401).json({ error: "Invalid credentials" });
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
+    
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const payload = { userId: user.id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
+    
+    // Fix cookie settings for proper cross-domain functionality
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      maxAge: 15 * 60 * 1000,
+      sameSite: 'strict', // Use 'None' with secure:true in production with HTTPS
+      // secure: true, // Uncomment in production with HTTPS
+      path: '/'
+    });
+
+    // Ensure that the password is not sent to the client
+    const userData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    };
+
+    console.log("User logged in successfully:", { id: user.id, email: user.email });
+    res.json(userData);
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ error: "Login failed. Please try again." });
   }
-
-  const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) {
-    return res.status(401).json({ error: "Invalid credentials" });
-  }
-
-  const payload = { userId: user.id };
-  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
-  res.cookie("token", token, { httpOnly: true, maxAge: 15 * 60 * 1000 });
-
-  // ensure that the password is not sent to the client
-  const userData = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-  };
-
-  res.json(userData);
 });
 
+// Rest of your code remains the same
 app.post("/logout", async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", { path: '/' });
   res.json({ message: "Logged out" });
+});
+
+app.get("/me", requireAuth, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { id: true, email: true, name: true },
+    });
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
 });
 
 // requireAuth middleware will validate the access token sent by the client and will return the user information within req.auth
