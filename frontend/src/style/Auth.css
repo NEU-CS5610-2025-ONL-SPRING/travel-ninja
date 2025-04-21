@@ -1,160 +1,204 @@
-/* styles/Auth.css */
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #121212; /* Darkest background for the entire page */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+/* style/Auth.css - Updated version */
+/* Base styles for form elements shared across components */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}
+
+.search-button-container {
+  display: flex;
+  align-items: center;
+  /* This centers the button vertically */
+}
+
+.submit-button,
+.auth-button {
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submit-button:hover,
+.auth-button:hover {
+  background-color: #535bf2;
+  transform: translateY(-2px);
+}
+
+.submit-button:disabled,
+.auth-button:disabled {
+  background-color: #444;
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+.form-group input.input-error {
+  border-color: #ff6464;
+  background-color: rgba(255, 100, 100, 0.05);
+}
+
+/* Message styling */
+.error-message,
+.error-message-input {
+  color: #ff6464;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  background-color: rgba(255, 100, 100, 0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border-left: 3px solid #ff6464;
+}
+
+.loading-message {
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Auth container styling */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.auth-card {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.auth-card h1 {
+  color: #646cff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-link a {
+  color: #646cff;
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  
-  .auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%;
-    background-color: #121212; /* Match the body background */
-  }
-  
+
   .auth-card {
-    background-color: #1e1e1e; /* Slightly lighter than the background */
-    border-radius: 12px;
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
   }
-  
+
   .auth-card h1 {
-    font-size: 2.5em;
-    margin-bottom: 1.5rem;
-    color: #646cff;
-    text-align: left;
+    font-size: 1.8rem;
   }
-  
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-  
-  .form-group label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.87);
-  }
-  
+
   .form-group input {
-    padding: 0.8rem;
-    font-size: 1rem;
-    border-radius: 8px;
-    border: 1px solid #333;
-    background-color: #2c2c2c; /* Input fields slightly lighter */
-    color: rgba(255, 255, 255, 0.87);
-    transition: border-color 0.25s, box-shadow 0.25s;
+    padding: 0.7rem;
   }
-  
-  .form-group input:focus {
-    border-color: #646cff;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.3);
-  }
-  
-  .form-group input.input-error {
-    border-color: #ff6464;
-    background-color: rgba(255, 100, 100, 0.1);
-  }
-  
-  .error-message {
-    color: #ff6464;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-    text-align: left;
-  }
-  
+
+  .submit-button,
   .auth-button {
-    margin-top: 1rem;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: 8px;
-    border: none;
-    background-color: #646cff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.25s;
-    width: 100%;
+    padding: 0.7rem 1rem;
   }
-  
-  .auth-button:hover {
-    background-color: #535bf2;
+}
+
+/* Fix for very small screens */
+@media (max-width: 320px) {
+  .auth-container {
+    padding: 0.5rem;
   }
-  
-  .auth-button:disabled {
-    background-color: #4b4b4b;
-    color: #8f8f8f;
-    cursor: not-allowed;
+
+  .auth-card {
+    padding: 1rem;
   }
-  
-  .auth-link {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.87);
-    text-align: left;
+
+  .auth-card h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
   }
-  
-  .auth-link a {
-    color: #646cff;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.25s;
+}
+
+/* Fix for landscape orientation on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .auth-container {
+    min-height: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
-  
-  .auth-link a:hover {
-    color: #535bf2;
-    text-decoration: underline;
+}
+
+/* Touch-friendly targets for mobile */
+@media (hover: none) and (pointer: coarse) {
+
+  .form-group input,
+  .submit-button,
+  .auth-button {
+    min-height: 44px;
+    /* Minimum touch target size */
   }
-  
-  /* Reset the media query for light mode since we want dark throughout */
-  @media (prefers-color-scheme: light) {
-    body, .auth-container {
-      background-color: #121212;
-      color: rgba(255, 255, 255, 0.87);
-    }
-    
-    .auth-card {
-      background-color: #1e1e1e;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-    
-    .form-group label, .auth-link {
-      color: rgba(255, 255, 255, 0.87);
-    }
-    
-    .form-group input {
-      background-color: #2c2c2c;
-      border-color: #333;
-      color: rgba(255, 255, 255, 0.87);
-    }
-  }
-  
-  /* Ensure the root container covers the entire viewport */
-  #root {
-    max-width: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+}

@@ -5,6 +5,9 @@ body {
   background-color: #121212;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: rgba(255, 255, 255, 0.87);
+  display: flex;
+  justify-content: center;
+  /* Keep the centering you added */
 }
 
 .app {
@@ -14,6 +17,9 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  /* Ensure padding doesn't add to width */
 }
 
 .title {
@@ -36,9 +42,12 @@ body {
   max-width: 800px;
   margin-bottom: 2rem;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  /* Ensure padding doesn't add to width */
 }
 
-.header > div {
+
+.header>div {
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1rem;
@@ -107,15 +116,17 @@ body {
   width: 100%;
   max-width: 800px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  /* Ensure padding doesn't add to width */
 }
 
-/* Responsive adjustments */
+/* Better responsive breakpoints */
 @media (max-width: 840px) {
   .app {
     padding: 1.5rem;
   }
-  
-  .header, 
+
+  .header,
   .content {
     max-width: 100%;
   }
@@ -123,23 +134,49 @@ body {
 
 @media (max-width: 480px) {
   .app {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
   }
-  
+
+  .title h1 {
+    font-size: 1.8rem;
+  }
+
   .header {
-    padding: 1.25rem;
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
   }
-  
+
   .content {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
   }
-  
+
   .menu-list {
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
-  
+
   .menu-list a,
   .exit-button {
-    padding: 0.6rem 1rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .menu-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .menu-list li {
+    width: 100%;
+  }
+
+  .menu-list a,
+  .exit-button {
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
