@@ -1,0 +1,200 @@
+/* Updated styles in FlightSearch.css */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* New search button container */
+.search-button-container {
+    display: flex;
+    align-items: center;
+    /* This centers the button vertically */
+}
+
+.submit-button {
+    background-color: #646cff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.submit-button:hover {
+    background-color: #535bf2;
+}
+
+.submit-button:disabled {
+    background-color: #444;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.form-group input.input-error {
+    border-color: #ff6464;
+    background-color: rgba(255, 100, 100, 0.05);
+}
+
+.error-message-input {
+    color: #ff6464;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+/* Input fields validation indication */
+.form-group input:valid {
+    border-color: #4CAF50;
+}
+
+/* Add this to your FlightSearch.css file */
+
+/* Updated styling for FlightSearch.css */
+
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    /* Increased gap for better spacing */
+    margin-top: 2rem;
+    padding: 0.5rem;
+}
+
+.flight-card {
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    padding: 1.75rem;
+    /* Increased padding */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.flight-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    background-color: #2a2a2a;
+    /* Lighter shade on hover */
+}
+
+/* Better spacing for flight details */
+.flight-header {
+    margin-bottom: 1.5rem;
+}
+
+.flight-header h3 {
+    margin: 0;
+    color: #646cff;
+    font-size: 1.3rem;
+}
+
+.flight-route {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+.flight-route-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Better alignment */
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.flight-arrow {
+    color: #646cff;
+}
+
+.flight-time {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.5rem;
+}
+
+.flight-details {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.flight-airline {
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.flight-duration,
+.flight-stops {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.flight-price {
+    margin-top: auto;
+    margin-bottom: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-label {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.price-amount {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #646cff;
+}
+
+.select-flight-btn {
+    width: 100%;
+    padding: 0.85rem;
+    background-color: #646cff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.select-flight-btn:hover {
+    background-color: #535bf2;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .results-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .results-container {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .flight-card {
+        padding: 1.5rem;
+    }
+}

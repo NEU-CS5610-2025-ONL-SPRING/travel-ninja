@@ -1,0 +1,145 @@
+/* style/appLayout.css */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.title h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  color: #646cff;
+  letter-spacing: -0.5px;
+}
+
+.header {
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.header > div {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+}
+
+.menu {
+  width: 100%;
+}
+
+.menu-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.menu-list li {
+  position: relative;
+}
+
+.menu-list a {
+  display: block;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-list a:hover {
+  background-color: rgba(100, 108, 255, 0.15);
+  color: #646cff;
+}
+
+.exit-button {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border: none;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.exit-button:hover {
+  background-color: rgba(255, 100, 100, 0.15);
+  color: #ff6464;
+}
+
+.content {
+  background-color: #1e1e1e;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 840px) {
+  .app {
+    padding: 1.5rem;
+  }
+  
+  .header, 
+  .content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 1rem;
+  }
+  
+  .header {
+    padding: 1.25rem;
+  }
+  
+  .content {
+    padding: 1.5rem;
+  }
+  
+  .menu-list {
+    gap: 0.75rem;
+  }
+  
+  .menu-list a,
+  .exit-button {
+    padding: 0.6rem 1rem;
+  }
+}

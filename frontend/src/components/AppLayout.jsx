@@ -1,7 +1,7 @@
 import { useAuthUser } from "../security/AuthContext";
 import { useNavigate, Outlet, Link } from "react-router-dom";
 
-// import "../style/appLayout.css";
+import "../style/AppLayout.css";
 
 export default function AppLayout() {
   const { user, logout } = useAuthUser();
