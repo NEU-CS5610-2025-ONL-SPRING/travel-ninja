@@ -104,17 +104,45 @@ app.get("/me", requireAuth, async (req, res) => {
 app.post("/itinerary", requireAuth, async (req, res) => {
   const userId = req.userId;
   const name = req.body.name;
-  const existingItinerary = await prisma.itinerary.findUnique({
-    where: { id: userId, name: name },
+  const existingItinerary = await prisma.itinerary.findFirst({
+    where: { userId: userId, name: name },
   });
   if (existingItinerary) {
-    return res.status(400).json({ error: "User already exists" });
+    return res.status(400).json({ error: "Itinerary already exists" });
   }
   const newItinerary = await prisma.itinerary.create({
     data: { name, userId },
-    select: { id: true, name: true },
+    select: { userId: true, name: true },
   });
   res.json(newItinerary);
+});
+
+app.get("/itinerary", requireAuth, async (req, res) => {
+  const userId = req.userId;
+  const itinerariesList = await prisma.itinerary.findMany({
+    where: { userId: userId },
+  });
+  res.json(itinerariesList);
+});
+
+app.get("/itinerary/:id", requireAuth, async (req, res) => {
+  const { id } = req.params;
+  const itiId = Number(id);
+  if (Number.isNaN(itiId)) {
+    return res.status(400).json({ error: "Invalid itinerary id" });
+  }
+  const itinerary = await prisma.itinerary.findUnique({
+    where: { id: itiId },
+    include: {
+      flights: true,
+    },
+  });
+
+  if (!itinerary) {
+    return res.status(404).json({ error: "Itinerary not found" });
+  }
+
+  return res.json(itinerary);
 });
 
 app.post("/flights", async function (req, res) {
@@ -206,7 +234,7 @@ app.post("/flights", async function (req, res) {
       extractedFlights.push(flightPairs);
     });
 
-    console.log("Extracted Flight Information:", extractedFlights);
+    // console.log("Extracted Flight Information:", extractedFlights);
     res.json(extractedFlights);
   } catch (error) {
     console.error("Error parsing JSON:", error);
@@ -214,41 +242,42 @@ app.post("/flights", async function (req, res) {
   }
 });
 
-app.post("/addFlight", requireAuth, async function (req, res) {
-  const userId = req.userId;
-  const flightName = req.body.flightName;
-  const airlineName = req.body.airlineName;
-  const source = req.body.source;
-  const destination = req.body.destination;
-  const departureDate = req.body.departureDate;
-  const returnDate = req.body.returnDate;
-  const price = parseFloat(req.body.price);
+app.post("/addFlight/:itId", requireAuth, async (req, res) => {
+  const itineraryId = parseInt(req.params.itId, 10);
+  if (Number.isNaN(itineraryId)) {
+    return res.status(400).json({ error: "Invalid itinerary id" });
+  }
+
+  const { outbound } = req.body;
+  const seg = outbound?.segmentsDetails?.[0];
+  if (!seg) {
+    return res.status(400).json({ error: "Missing flight segment details" });
+  }
 
   try {
+    // 3) create the Flight, *only* connecting the itinerary:
     const flight = await prisma.flight.create({
       data: {
-        flightName,
-        airlineName,
-        source,
-        destination,
-        departureDate: new Date(departureDate),
-        returnDate: new Date(returnDate),
-        price,
+        flightName: seg.flightNumber,
+        airlineName: seg.airlineName,
+        source: outbound.originCode,
+        destination: outbound.arrivalCode,
+        departureDate: new Date(outbound.departureTime),
+        returnDate: new Date(outbound.arrivalTime),
+        price: parseFloat(outbound.price.total),
 
-        User: {
-          connect: { id: userId },
-        },
+        // ← connect to the itinerary
+        itinerary: { connect: { id: itineraryId } },
       },
     });
 
-    res.json(flight);
-  } catch (error) {
-    console.error("Error creating flight: ", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while creating the flight." });
+    return res.json(flight);
+  } catch (err) {
+    console.error("Error creating flight:", err);
+    return res.status(500).json({ error: "Unable to add flight to itinerary" });
   }
 });
+
 app.listen(8000, () => {
   console.log("Server running on http://localhost:8000 🎉 🚀");
 });

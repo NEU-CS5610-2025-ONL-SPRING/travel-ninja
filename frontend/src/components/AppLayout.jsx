@@ -22,7 +22,7 @@ export default function AppLayout() {
               <Link to="/app/flightSearch">Flight Search</Link>
             </li>
             <li>
-              <Link to="/app/savedFlights">Saved Flights List</Link>
+              <Link to="/app/itineraries">My Itineraries</Link>
             </li>
             <li>
               <button
