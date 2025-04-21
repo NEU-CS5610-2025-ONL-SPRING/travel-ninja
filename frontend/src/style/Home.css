@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.home-card {
+  max-width: 800px;
+  width: 90%;
+  padding: 2rem;
+}
+
+.home-title {
+  font-size: 3.2em;
+  color: #646cff;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.home-description {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 3rem;
+  font-size: 1.2rem;
+}
+
+.action-cards {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.action-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-card h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.action-card p {
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: #646cff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #535bf2;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .action-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .action-card {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-title {
+    font-size: 2.5em;
+  }
+
+  .home-card {
+    padding: 1.5rem;
+  }
+}
