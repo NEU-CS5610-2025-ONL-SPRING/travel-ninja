@@ -13,12 +13,39 @@ import itineraryRoutes from "./routes/itineraries.js";
 const app = express();
 export const prisma = new PrismaClient();
 
+// app.use(
+//   cors({
+//     origin: "https://frontend-4fcrqfdux-shreyas-sahus-projects.vercel.app",
+//     credentials: true,
+//   })
+// );
+
+// Replace your current CORS setup with this:
+const allowedOrigins = [
+  "https://frontend-4fcrqfdux-shreyas-sahus-projects.vercel.app",
+  // Add any other origins you need to support, such as localhost for development
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: "https://frontend-4fcrqfdux-shreyas-sahus-projects.vercel.app",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log("Blocked by CORS:", origin);
+        callback(new Error("CORS policy violation"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("dev"));
