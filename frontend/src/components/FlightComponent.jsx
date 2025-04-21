@@ -58,7 +58,7 @@ export default function FlightComponent({ reqBody, index }) {
         setAdding(true);
         try {
             const res = await fetch(
-                `${API_URL}/addFlight/${itineraryId}`,
+                `${API_URL}/flights/addFlight/${itineraryId}`,
                 {
                     method: "POST",
                     credentials: "include",

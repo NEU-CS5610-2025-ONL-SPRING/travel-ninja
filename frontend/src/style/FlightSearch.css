@@ -1,4 +1,26 @@
-/* Updated styles in FlightSearch.css */
+/* style/FlightSearch.css */
+.flight-search-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    color: rgba(255, 255, 255, 0.87);
+}
+
+.flight-search-title {
+    color: #646cff;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.flight-search-form {
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -6,11 +28,37 @@
     margin-bottom: 1.5rem;
 }
 
-/* New search button container */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #2a2a2a;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #646cff;
+    box-shadow: 0 0 0 2px rgba(100, 108, 255, 0.2);
+}
+
 .search-button-container {
     display: flex;
     align-items: center;
-    /* This centers the button vertically */
 }
 
 .submit-button {
@@ -47,44 +95,48 @@
     margin-top: 0.3rem;
 }
 
-/* Input fields validation indication */
-.form-group input:valid {
-    border-color: #4CAF50;
+.loading-message {
+    text-align: center;
+    margin: 2rem 0;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-/* Add this to your FlightSearch.css file */
-
-/* Updated styling for FlightSearch.css */
+.error-message {
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.8rem;
+    border-radius: 8px;
+    background-color: rgba(255, 100, 100, 0.1);
+    color: #ff6464;
+    font-size: 0.95rem;
+}
 
 .results-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
-    /* Increased gap for better spacing */
+    gap: 2rem;
     margin-top: 2rem;
-    padding: 0.5rem;
 }
 
 .flight-card {
     background-color: #1e1e1e;
     border-radius: 16px;
     padding: 1.75rem;
-    /* Increased padding */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    height: 100%;
+    height: 98%;
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
+    margin-bottom: 3rem;
 }
 
 .flight-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     background-color: #2a2a2a;
-    /* Lighter shade on hover */
 }
 
-/* Better spacing for flight details */
 .flight-header {
     margin-bottom: 1.5rem;
 }
@@ -105,7 +157,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Better alignment */
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -180,21 +231,62 @@
     transform: translateY(-2px);
 }
 
-/* Responsive adjustments */
-@media (max-width: 992px) {
-    .results-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-}
-
+/* Mobile-friendly improvements for FlightSearch.css */
 @media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .flight-search-form {
+        padding: 1.25rem;
+    }
+
     .results-container {
         grid-template-columns: 1fr;
         gap: 1.25rem;
     }
 
     .flight-card {
-        padding: 1.5rem;
+        padding: 1.25rem;
+    }
+
+    .flight-route-info {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .flight-search-title {
+        font-size: 1.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-group input {
+        padding: 0.7rem;
+    }
+
+    .submit-button,
+    .select-flight-btn {
+        padding: 0.7rem;
+        font-size: 0.95rem;
+    }
+
+    .price-amount {
+        font-size: 1.1rem;
+    }
+}
+
+/* Ensure inputs are touch-friendly */
+@media (max-width: 768px) {
+
+    .form-group input,
+    .submit-button,
+    .select-flight-btn {
+        min-height: 42px;
     }
 }
