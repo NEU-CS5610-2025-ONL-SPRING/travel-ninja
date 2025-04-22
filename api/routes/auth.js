@@ -35,8 +35,8 @@ router.post("/register", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
-      sameSite: "strict",
-      path: "/",
+      sameSite: "none",
+      secure: true,
     });
 
     console.log("User registered successfully:", {
@@ -77,8 +77,8 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 15 * 60 * 1000,
-      sameSite: "strict",
-      path: "/",
+      sameSite: "none",
+      secure: true,
     });
 
     const userData = {
